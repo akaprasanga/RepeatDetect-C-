@@ -16,7 +16,7 @@ namespace ConsoleApp1
         
         static void Main(string[] args)
         {
-            String image_path = "D:/Work/correlation/Rtest/test (6).png";
+            String image_path = "D:/Work/correlation/Rtest/Junctont.png";
             Image<Gray, byte> img = new Image<Gray, byte>(image_path);
 
 
@@ -35,9 +35,12 @@ namespace ConsoleApp1
 
             if (intersectionX == -1 && intersectionY == -1)
             {
+                int intersectionx = 0;
+                int intersectiony = 0;
                 Console.WriteLine("No repeat Pattern Detected");
-                //EdgeXoringImage(image_path, out indices_x, out indices_y);
-                //CenterAnalysis(indices_x, indices_y, width, height, out intersectionX, out intersectionY);
+                EdgeXoringImage(image_path, out indices_x, out indices_y);
+                CenterAnalysis(indices_x, indices_y, width, height, out intersectionX, out intersectionY);
+
 
                 //XoringImage(image_path, out indices_x, out indices_y);
                 //CenterAnalysis(indices_x, indices_y, width, height, out intersectionX, out intersectionY);
@@ -122,7 +125,12 @@ namespace ConsoleApp1
 
             Image<Gray, byte> image = new Image<Gray, byte>(path);
             Image<Gray, byte> image2 = new Image<Gray, byte>(path);
-            Image<Gray, byte> original = new Image<Gray, byte>(path);
+            Image<Gray, byte> original = new Image<Gray, byte>(path)
+                
+                ;
+
+            //Image<Gray, byte> image2 = image;
+            //Image<Gray, byte> original = image;
 
 
 
@@ -140,7 +148,7 @@ namespace ConsoleApp1
             {
                 Image<Gray, byte> row = new Image<Gray, byte>(1, image.Width);
                 CvInvoke.cvGetRow(image, row, 0);
-                Image<Gray, byte> xor_image = new Image<Gray, byte>(image.Height, image.Width);
+                Image<Gray, byte> xor_image = new Image<Gray, byte>(image.Width, image.Height);
 
                 Rectangle rect = new Rectangle(0, 1, image.Width, image.Height);
                 image.ROI = rect;
@@ -235,18 +243,18 @@ namespace ConsoleApp1
 
 
 
-            Image<Gray, byte> edge_image = new Image<Gray, byte>(eimage.Height, eimage.Width);
+            Image<Gray, byte> edge_image = new Image<Gray, byte>(eimage.Width, eimage.Height);
             CvInvoke.Canny(eimage, edge_image, 50, 100);
             eimage = edge_image;
 
 
             Image<Gray, byte> image2 = new Image<Gray, byte>(path);
-            Image<Gray, byte> edge_image2 = new Image<Gray, byte>(image2.Height, image2.Width);
+            Image<Gray, byte> edge_image2 = new Image<Gray, byte>(image2.Width, image2.Height);
             CvInvoke.Canny(image2, edge_image2, 50, 100);
             image2 = edge_image2;
 
             Image<Gray, byte> original = new Image<Gray, byte>(path);
-            Image<Gray, byte> edge_original = new Image<Gray, byte>(original.Height, original.Width);
+            Image<Gray, byte> edge_original = new Image<Gray, byte>(original.Width, original.Height);
             CvInvoke.Canny(original, edge_original, 50, 100);
             original = edge_original;
             
@@ -267,7 +275,7 @@ namespace ConsoleApp1
                 Image<Gray, byte> row = new Image<Gray, byte>(1, eimage.Width);
                 CvInvoke.cvGetRow(eimage, row, 0);
 
-                Image<Gray, byte> xor_image = new Image<Gray, byte>(eimage.Height, eimage.Width);
+                Image<Gray, byte> xor_image = new Image<Gray, byte>(eimage.Width, eimage.Height);
 
                 Rectangle rect = new Rectangle(0, 1, eimage.Width, eimage.Height);
                 eimage.ROI = rect;
@@ -276,13 +284,9 @@ namespace ConsoleApp1
                 Image<Gray, byte> gray = eimage.Convert<Gray, byte>();
                 Image<Gray, byte> gray_row = row.Convert<Gray, byte>();
 
-                Console.Write(eimage.Height);
-                Console.Write(eimage.Width);
 
                 eimage = gray.ConcateVertical(gray_row);
 
-                Console.WriteLine(eimage.Height);
-                Console.WriteLine(eimage.Width);
 
                 CvInvoke.BitwiseXor(original, eimage, xor_image);
                 Gray gray_sum = xor_image.GetSum();
